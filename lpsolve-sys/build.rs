@@ -1,10 +1,12 @@
-extern crate gcc;
+extern crate cc;
 
 use std::env;
 
 fn main() {
-    let mut cfg = gcc::Build::new();
-    cfg.include("lp_solve_5.5")
+    let mut cfg = cc::Build::new();
+    cfg.warnings(false)
+       .flag("-Wno-everything") // Disable all warnings to reduce spam
+       .include("lp_solve_5.5")
        .include("lp_solve_5.5/bfp")
        .include("lp_solve_5.5/bfp/bfp_LUSOL")
        .include("lp_solve_5.5/bfp/bfp_LUSOL/LUSOL")
@@ -22,7 +24,7 @@ fn main() {
        .file("lp_solve_5.5/shared/mmio.c")
        .file("lp_solve_5.5/shared/myblas.c")
        .file("lp_solve_5.5/ini.c")
-       .file("lp_solve_5.5/fortify.c")
+      //.file("lp_solve_5.5/fortify.c") // removed: causes linker warning about no symbols in fortify.o
        .file("lp_solve_5.5/lp_rlp.c")
        .file("lp_solve_5.5/lp_crash.c")
        .file("lp_solve_5.5/bfp/bfp_LUSOL/lp_LUSOL.c")
@@ -56,10 +58,12 @@ fn main() {
         tos => panic!("unknown target os {:?}!", tos)
     }
 
-    if !std::env::var("TARGET").unwrap().contains("msvc") {
-        cfg.flag("-lm");
-        cfg.flag("-ldl");
-    }
+    // removed: causes many warnings about unused flags
+//    println!("rerun-if-env-changed=TARGET");
+//    if !std::env::var("TARGET").unwrap().contains("msvc") {
+//        cfg.flag("-lm");
+//        cfg.flag("-ldl");
+//    }
 
     cfg.compile("liblpsolve.a");
 }
