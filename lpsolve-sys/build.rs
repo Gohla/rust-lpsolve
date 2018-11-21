@@ -5,7 +5,6 @@ use std::env;
 fn main() {
     let mut cfg = cc::Build::new();
     cfg.warnings(false)
-       .flag("-Wno-everything") // Disable all warnings to reduce spam
        .include("lp_solve_5.5")
        .include("lp_solve_5.5/bfp")
        .include("lp_solve_5.5/bfp/bfp_LUSOL")
